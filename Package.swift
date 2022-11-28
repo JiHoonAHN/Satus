@@ -1,5 +1,4 @@
 // swift-tools-version: 5.7
-// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
@@ -10,17 +9,21 @@ let package = Package(
         .library(name: "Satus", targets: ["Satus"]),
         .executable(name: "satus-cli", targets: ["SatusCLI"])
     ],
-    dependencies: [],
+    dependencies: [
+        .package(url: "https://github.com/johnsundell/files.git", from: "4.2.0")
+    ],
     targets: [
         .target(
             name: "Satus",
-            dependencies: []),
+            dependencies: [
+                .product(name: "Files", package: "files")
+            ]),
         .target(
             name: "SatusCLI",
             dependencies: ["SatusCLICore"]),
         .target(
             name: "SatusCLICore",
-            dependencies: []
+            dependencies: ["Satus"]
         ),
         .testTarget(
             name: "SatusTests",
