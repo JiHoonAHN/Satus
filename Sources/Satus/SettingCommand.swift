@@ -2,18 +2,18 @@ import Foundation
 import Files
 import Dispatch
 
-public struct Command {
+public struct SettingCommand {
     
-    static func bash() -> Command {
+    static func bash() -> SettingCommand {
         return .init()
     }
-    static func brew() -> Command {
+    static func brew() -> SettingCommand {
         return .init()
     }
-    static func curl() -> Command {
+    static func curl() -> SettingCommand {
         return .init()
     }
-    static func sudo() -> Command {
+    static func sudo() -> SettingCommand {
         return .init()
     }
 }

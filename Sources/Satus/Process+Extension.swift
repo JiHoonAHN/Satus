@@ -60,7 +60,7 @@ extension Process {
         
         return try outputQueue.sync {
             if terminationStatus != 0 {
-                throw CommandError(status: terminationStatus, errorData: errorData, outputData: outputData)
+                throw SettingCommandError(status: terminationStatus, errorData: errorData, outputData: outputData)
             }
             return outputData.terminalOutput()
         }

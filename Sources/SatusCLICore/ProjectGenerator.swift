@@ -6,16 +6,19 @@ struct ProjectGenerator {
     private let repositoryURL: URL
     private let version: String
     private let projectName: String
+    private let projectType: ProjectType
     
     init(
         folder: Folder,
         repositoryURL: URL,
-        version: String
+        version: String,
+        type: ProjectType
     ) {
         self.folder = folder
         self.repositoryURL = repositoryURL
         self.version = version
         self.projectName = folder.name
+        self.projectType = type
     }
     
     func generate() throws {
@@ -25,8 +28,22 @@ struct ProjectGenerator {
         
         try generateGitignore()
         try generatePackage()
-        try generateMainFile()
-        try generateDetailFile()
+        
+        switch projectType {
+        case .plugin:
+            try generateMainFile()
+            try generateDetailFile()
+        case .setting:
+            try generatePluginBoilerplate()
+        }
+        
+        print(
+            """
+            🚀 Generated \(projectType.rawValue) project!
+            ---------------------------------------------
+            projectName: \(projectName)
+            """
+        )
     }
 }
 // MARK: - Private
@@ -51,7 +68,7 @@ private extension ProjectGenerator {
             name: "\(projectName)",
             platforms: [.macOS(.v12)],
             products: [
-                .executable(
+                .\(projectType.product)(
                     name: "\(projectName)",
                     targets: ["\(projectName)"]
                 )
@@ -88,6 +105,23 @@ private extension ProjectGenerator {
         
         struct \(projectName): Setting {
             
+        }
+        """)
+    }
+    
+    func generatePluginBoilerplate() throws {
+        let path = "Sources/\(projectName)/\(projectName).swift"
+        let methodName = projectName[projectName.startIndex].lowercased() + projectName.dropFirst()
+        
+        try folder.createFileIfNeeded(at: path).write("""
+        import Satus
+        
+        public extension Plugin {
+            static func \(methodName)() -> Self {
+                Plugin(name: "\(projectName)") {
+                    //Add Custom Plugin Feature
+                }
+            }
         }
         """)
     }

@@ -29,7 +29,8 @@ public struct CLI {
             let newProject = ProjectGenerator(
                 folder: folder,
                 repositoryURL: repositoryURL,
-                version: version
+                version: version,
+                type: projectType(from: arguments)
             )
             try newProject.generate()
         case "run":
@@ -64,5 +65,12 @@ private extension CLI {
             
           See 'satus help <subcommand>' for detailed help.
         """)
+    }
+    
+    private func projectType(from arguments: [String]) -> ProjectType {
+        guard arguments.count > 2 else {
+            return .setting
+        }
+        return ProjectType(rawValue: arguments[2]) ?? .setting
     }
 }
